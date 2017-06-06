@@ -1,0 +1,14 @@
+click==6.7
+Flask==0.12.2
+Flask-SQLAlchemy==2.2
+itsdangerous==0.24
+jieba==0.38
+Jinja2==2.9.6
+lxml==3.7.3
+MarkupSafe==1.0
+pyltp==0.1.9.1
+PyMySQL==0.7.11
+requests==2.14.2
+snownlp==0.12.3
+SQLAlchemy==1.1.10
+Werkzeug==0.12.2

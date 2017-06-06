@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block style %}
+    <link rel="stylesheet" href="../static/css/detail.css">
+{% endblock %}
+{% block content %}
+    <div id="results">
+        <!-- 抓取评论button -->
+        <el-button class="my_button" type="primary" @click="get_json" v-show="show_button">抓取评论</el-button>
+
+        <!-- 信息展示区 -->
+        <div class="item_info" v-show="show_info">
+            <!-- 商品名称 -->
+            商品名称：<label v-text="product_name"></label><br><br>
+
+            <!-- 商品链接 -->
+            京东链接：<a :href="product_url" v-text="product_url"></a><br><br>
+
+            <!-- 综合评分星级 -->
+            <div id="rate">
+                <label>综合评分星级：</label>
+                <el-rate v-model="value" disabled :colors="['#99A9BF', '#F7BA2A', '#FF9900']"></el-rate>
+            </div>
+            <br>
+            <hr>
+            <!-- 图表区域 -->
+            <div class="my_charts">
+                <div class="row">
+                    <!-- 评价比例饼图 -->
+                    <div id="comment_level" class="my_chart"></div>
+
+                    <!-- 颜色比例饼图 -->
+                    <div id="colors" class="my_chart"></div>
+                </div>
+                <br><br>
+                <div class="row">
+                    <!-- 配置比例饼图 -->
+                    <div id="sizes" class="my_chart"></div>
+
+                    <!-- 渠道比例饼图 -->
+                    <div id="devices" class="my_chart"></div>
+                </div>
+            </div>
+
+            <br>
+            <hr>
+            <!-- 评论实体 -->
+            <div class="aspect" v-for="item in items">
+                <el-tag class="aspect-text" v-text="item.text" :type="item.sentiment"></el-tag>
+                <el-tag class="aspect-adjs" v-text="adj.text" type="primary" v-for="adj in item.adjs"></el-tag>
+            </div>
+
+            <!-- 评论表格 -->
+            <template>
+                <el-table :data="tableData" stripe style="width: 100%" v-loading="loading"
+                          element-loading-text="拼命加载中">
+                    <el-table-column prop="comment" label="评论"></el-table-column>
+                </el-table>
+            </template>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="../static/js/echarts.js"></script>
+    <script>
+        const results = new Vue({
+            el: "#results",
+            data: {
+                tableData: [],
+                items: [],
+                'loading': false,
+                'show_button': true,
+                'show_info': false,
+                'value': 0,
+                'product_name': '',
+                'product_url': ''
+            },
+            methods: {
+                get_json() {
+                    this.show_button = false;
+                    this.loading = true;
+                    this.show_info = true;
+                    axios.get('/detail/' + {{ product_id }})
+                        .then(function (response) {
+                            results._data.tableData = response.data.tables;
+                            results._data.items = response.data.items;
+                        }).then(function () {
+                        results._data.loading = false;
+
+                    });
+                    axios.get('/get_item/' + {{ product_id }})
+                        .then(function (response) {
+                            results._data.product_name = response.data.name;
+                            results._data.product_url = response.data.url;
+                            results._data.value = response.data.rate;
+
+                            // 不同等级评价比例
+                            // 基于准备好的dom，初始化echarts实例
+                            var comment_level_chart = echarts.init(document.getElementById('comment_level'));
+
+                            // 指定图表的配置项和数据
+                            var comment_level_option = response.data.comment_level_option;
+
+                            // 使用刚指定的配置项和数据显示图表。
+                            comment_level_chart.setOption(comment_level_option);
+
+                            // 不同颜色比例
+                            // 基于准备好的dom，初始化echarts实例
+                            var colors_chart = echarts.init(document.getElementById('colors'));
+
+                            // 指定图表的配置项和数据
+                            var colors_option = response.data.colors_option;
+
+                            // 使用刚指定的配置项和数据显示图表。
+                            colors_chart.setOption(colors_option);
+
+                            // 不同配置比例
+                            // 基于准备好的dom，初始化echarts实例
+                            var sizes_chart = echarts.init(document.getElementById('sizes'));
+
+                            // 指定图表的配置项和数据
+                            var sizes_option = response.data.sizes_option;
+
+                            // 使用刚指定的配置项和数据显示图表。
+                            sizes_chart.setOption(sizes_option);
+
+                            // 不同渠道比例
+                            // 基于准备好的dom，初始化echarts实例
+                            var devices_chart = echarts.init(document.getElementById('devices'));
+
+                            // 指定图表的配置项和数据
+                            var devices_option = response.data.devices_option;
+
+                            // 使用刚指定的配置项和数据显示图表。
+                            devices_chart.setOption(devices_option);
+                        });
+                }
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block style %}
+    <link rel="stylesheet" href="../static/css/detail.css">
+{% endblock %}
+{% block content %}
+    <div id="results">
+        <el-button class="my_button" type="primary" @click="get_json" v-show="show_button"
+                   v-loading.fullscreen.lock="fullscreenLoading">点击加载
+        </el-button>
+        <br>
+        <el-input
+                placeholder="请输入商品地址"
+                icon="search"
+                v-model="item_url"
+                :on-icon-click="handleIconClick"
+                v-show="show_search">
+        </el-input>
+        <br><br>
+        <el-row>
+            <el-col :span="4" v-for="(o, index) in length" :key="o" :offset="0">
+                <el-card :body-style="{ padding: '0px' }">
+                    <a :href="products[index]['id']">
+                        <img :src="products[index]['img']" class="image">
+                        <div style="padding: 10px;">
+                            <div class="bottom clearfix">
+                                <span class="product-name" v-text="products[index]['name']"></span>
+                            </div>
+                        </div>
+                    </a>
+                    {#                    <span v-text="products[index]"></span>#}
+                </el-card>
+            </el-col>
+        </el-row>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        const results = new Vue({
+            el: "#results",
+            data: {
+                'products': '',
+                'length': 0,
+                'show_button': true,
+                'show_search': false,
+                'fullscreenLoading': false,
+                'item_url': ''
+            },
+            methods: {
+                get_json() {
+                    this.show_button = false;
+                    this.show_search = true;
+                    this.fullscreenLoading = true;
+                    setTimeout(() => {
+                        this.fullscreenLoading = false;
+                    }, 1000);
+                    axios.get('/general_ajax')
+                        .then(function (response) {
+                            results._data.products = response.data;
+                            results._data.length = response.data.length
+                        });
+                },
+                handleIconClick(ev) {
+                    {#                    console.log(ev);#}
+
+                    url = results._data.item_url;
+                    part = url.split('/')[3];
+                    id = part.split('.')[0];
+                    console.log(id);
+                    new_url = 'http://localhost:5000/product/' + id;
+                    window.open(new_url);
+                }
+            }
+        });
+    </script>
+{% endblock %}

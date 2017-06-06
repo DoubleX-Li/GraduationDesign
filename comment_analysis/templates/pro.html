@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block style %}
+    <link rel="stylesheet" href="../static/css/detail.css">
+{% endblock %}
+{% block content %}
+    <div id="results">
+        {#        <el-button class="my_button" type="primary" @click="get_json" v-show="show_button"#}
+        {#                   v-loading.fullscreen.lock="fullscreenLoading">点击加载#}
+        {#        </el-button>#}
+        <el-row>
+            <el-col :span="4" v-for="(o, index) in length" :key="o" :offset="0">
+                <el-card :body-style="{ padding: '0px' }">
+                    <a :href="products[index]['id']">
+{#                        <img :src="products[index]['img']" class="image">#}
+                        <div style="padding: 10px;">
+                            <div class="bottom clearfix">
+                                <span class="product-name" v-text="products[index]['name']"></span>
+                            </div>
+                        </div>
+                    </a>
+                    {#                    <span v-text="products[index]"></span>#}
+                </el-card>
+            </el-col>
+        </el-row>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        const results = new Vue({
+            el: "#results",
+            data: {
+                'products': '',
+                'length': 0,
+                {#                'show_button': true,#}
+                {#                'fullscreenLoading': false#}
+            },
+            created() {
+                this.get_json();
+            },
+            methods: {
+                get_json() {
+                    {#                    this.show_button = false;#}
+                    {#                    this.fullscreenLoading = true;#}
+{#                    setTimeout(() => {#}
+{#                        this.fullscreenLoading = false;#}
+{#                    }, 1000);#}
+                    axios.get('/pro_ajax')
+                        .then(function (response) {
+                            results._data.products = response.data;
+                            results._data.length = response.data.length
+                        });
+                }
+            }
+        });
+    </script>
+{% endblock %}

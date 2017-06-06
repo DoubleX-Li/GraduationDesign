@@ -1,0 +1,48 @@
+.time {
+    font-size: 13px;
+    color: #999;
+}
+
+.bottom {
+    margin-top: 13px;
+    line-height: 12px;
+}
+
+.button {
+    padding: 0;
+    float: right;
+}
+
+.image {
+    width: 200px;
+    display: block;
+}
+
+.product-name {
+    font-size: 13px;
+    color: #999;
+}
+
+a {
+    text-decoration: none;
+}
+
+.my_button {
+    margin-left: 46%;
+    margin-top: 20%;
+}
+
+.aspect {
+    margin-top: 10px;
+}
+
+.aspect-adjs {
+    margin-right: 5px;
+}
+
+.my_chart {
+    /*float: left;*/
+    display: inline-block;
+    width: 500px;
+    height: 300px;
+}
