@@ -1,3 +1,10 @@
+# 使用的相关技术
+- Scrapy
+- Pandas
+- SnowNLP
+- Flask
+- Element UI
+
 # 部署说明
 
 ## 环境准备
