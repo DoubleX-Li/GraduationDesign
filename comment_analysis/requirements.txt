@@ -4,7 +4,7 @@ Flask-SQLAlchemy==2.2
 itsdangerous==0.24
 jieba==0.38
 Jinja2==2.9.6
-lxml==3.7.3
+lxml==4.6.2
 MarkupSafe==1.0
 pyltp==0.1.9.1
 PyMySQL==0.7.11
